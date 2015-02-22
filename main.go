@@ -30,7 +30,7 @@ func getLog(logFile string) string {
     log.Fatal("Error opening config: ", err)
   }
   s := strings.Replace(string(logstr), "\n", "\t\t", -1)
-  return strings.Replace(string(s), "kaikai", "\n", -1)
+  return strings.Replace(string(s), "\\n", "\n", -1)
 }
 
 func channelList(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
