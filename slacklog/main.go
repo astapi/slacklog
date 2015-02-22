@@ -29,7 +29,8 @@ func getLog(logFile string) string {
   if err != nil {
     log.Fatal("Error opening config: ", err)
   }
-  return strings.Replace(string(logstr), "kaikai", "\n", -1)
+  s := strings.Replace(string(logstr), "\n", "\t\t", -1)
+  return strings.Replace(string(s), "kaikai", "\n", -1)
 }
 
 func channelList(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -77,7 +78,7 @@ func groupLog(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
   str := getLog(filepath.Join(*ConfigDirectory, ps.ByName("group") + ".log"))
   w.WriteHeader(http.StatusOK)
-  jsonResp(w, strings.Split(str, "\n"))
+  jsonResp(w, strings.Split(str, "\t\t"))
 }
 
 func channelLog(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -89,14 +90,14 @@ func channelLog(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
   str := getLog(filepath.Join(*ConfigDirectory, ps.ByName("channel") + ".log"))
   w.WriteHeader(http.StatusOK)
-  jsonResp(w, strings.Split(str, "\n"))
+  jsonResp(w, strings.Split(str, "\t\t"))
 }
 
 func jsonResp(w http.ResponseWriter, msg []string) {
   w.Header().Set("Content-Type", "application/json; charset=utf-8")
   resp := Message {
     Status: "ok",
-    Messages: msg,
+    Messages: msg[:len(msg)-1],
   }
   r, err := json.Marshal(resp)
   if err != nil {
